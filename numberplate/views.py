@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .models import TrespassingEvent, LicensePlate, Thread , ThreadImage , AccessToken
+from .models import TrespassingEvent, Deal, Thread , ThreadImage , AccessToken
 import json
 import logging
 from django.views.decorators.csrf import csrf_exempt
@@ -44,10 +44,7 @@ def save_trespassing_info(request):
                 image_url = info.get('image_url') 
                 location = info['location']
 
-                # Get or create the license plate
                 license_plate, created = LicensePlate.objects.get_or_create(plate_number=license_plate_number)
-
-                # Create the trespassing event
                 trespassing_event = TrespassingEvent.objects.create(
                     license_plate=license_plate,
                     datetime_of_trespassing=datetime_of_trespassing,
@@ -55,14 +52,11 @@ def save_trespassing_info(request):
                     image_url=image_url
                 )
 
-                # Update or create the thread associated with the license plate
                 thread_info = f"Trespassing event recorded on {datetime_of_trespassing} at {location}."
                 thread, thread_created = Thread.objects.update_or_create(
                     license_plate=license_plate,
                     defaults={'thread_info': thread_info}
                 )
-                
-                # Update or create the thread image
                 thread_image, thread_image_created = ThreadImage.objects.get_or_create(thread=thread)
                 if not thread_image_created:
                     thread_image.image_url = image_url
