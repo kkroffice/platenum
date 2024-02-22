@@ -1,0 +1,73 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}"> <!-- Assuming your CSS file is named styles.css -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            max-width: 400px;
+            margin: auto;
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Sign Up</h2>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" class="signup-form">
+            {% csrf_token %}
+            <label for="id_username">Username:</label>
+            <input type="text" id="id_username" name="username" required maxlength="150" pattern="[a-zA-Z0-9@/./+/-/_]+" title="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.">
+            <label for="id_password1">Password:</label> <!-- Change id and name to 'password1' -->
+            <input type="password" id="id_password1" name="password1" required minlength="8" pattern="^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d@/./+/-/_]+$" title="Your password can’t be too similar to your other personal information. Your password must contain at least 8 characters. Your password can’t be entirely numeric.">
+            <label for="id_password2">Password confirmation:</label> <!-- Change id and name to 'password2' -->
+            <input type="password" id="id_password2" name="password2" required>
+            <button type="submit">Sign Up</button>
+        </form>        
+    </div>
+</body>
+</html>

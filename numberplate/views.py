@@ -1,10 +1,14 @@
 from django.http import JsonResponse
-from .models import TrespassingEvent, Deal, Thread , ThreadImage , AccessToken
+from .models import TrespassingEvent, Deal, Thread, ThreadImage, AccessToken, LicencePlates
 import json
+from django.contrib import messages
 import logging
 from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
-
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout
 
 from datetime import datetime
 
@@ -44,7 +48,7 @@ def save_trespassing_info(request):
                 image_url = info.get('image_url') 
                 location = info['location']
 
-                license_plate, created = LicensePlate.objects.get_or_create(plate_number=license_plate_number)
+                license_plate, created = LicencePlates.objects.get_or_create(plate_number=license_plate_number)
                 trespassing_event = TrespassingEvent.objects.create(
                     license_plate=license_plate,
                     datetime_of_trespassing=datetime_of_trespassing,
@@ -68,3 +72,46 @@ def save_trespassing_info(request):
             return JsonResponse({'error': 'An error occurred while saving trespassing events. Please check the logs for more information.'}, status=400)
     else:
         return JsonResponse({'error': 'Only POST requests are allowed'}, status=405)
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, 'Account created successfully. You are now logged in.')
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'Failed to authenticate user after signup.')
+        else:
+            messages.error(request, 'Form is not valid. Please check your input.')
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f'{field}: {error}')
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
+
+
+
+def user_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('dashboard')  # Redirect to the dashboard after login
+    else:
+        form = AuthenticationForm()
+    return render(request, 'login.html', {'form': form})
+
+def user_logout(request):
+    logout(request)
+    return redirect('login')  
+
+def dashboard(request):
+    return render(request, 'dashboard.html')

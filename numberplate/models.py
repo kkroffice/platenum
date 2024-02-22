@@ -6,6 +6,7 @@ class Deal(models.Model):
     deal_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Deal ID")
     trespassing_location = models.ForeignKey('TrespassingLocation', on_delete=models.CASCADE, verbose_name="Trespassing Location")
     plate_number = models.ForeignKey('TrespassingEvent', on_delete=models.CASCADE, related_name="related_deals", verbose_name="Trespassing Event")
+    lawyer = models.ForeignKey('Lawyer', on_delete=models.CASCADE, verbose_name="Lawyer Contact", default=None)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
     workflow_step = models.ForeignKey('WorkflowStep', on_delete=models.CASCADE, verbose_name="Workflow Step", blank=True, null=True, default=None)
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Updated At")
@@ -18,7 +19,7 @@ class TrespassingEvent(models.Model):
     trespassing_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Trespassing ID")
     trespassing_event = models.CharField(max_length=255, verbose_name="Trespassing Event")
     deal = models.ForeignKey(Deal, on_delete=models.CASCADE, related_name="trespassing_events", verbose_name="Deal")
-    datetime_of_trespassing = models.DateTimeField(verbose_name="Datetime of Trespassing", )
+    datetime_of_trespassing = models.DateTimeField(verbose_name="Datetime of Trespassing",)
     trespassing_location = models.ForeignKey('TrespassingLocation', on_delete=models.CASCADE, verbose_name="Trespassing Location")
     image_url = models.URLField(verbose_name="Image URL", blank=True)
     trespassing_datetime = models.DateTimeField(auto_now_add=True, verbose_name="Trespassing Datetime")
@@ -31,7 +32,6 @@ class TrespassingEvent(models.Model):
 
 class TrespassingLocation(models.Model):
     trespassing_location_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Trespassing Location ID")
-    customer_name = models.CharField(max_length=255, verbose_name="Customer Name")
     location_owner = models.ForeignKey('Contact', on_delete=models.CASCADE, verbose_name="Location Owner")
     location_address = models.OneToOneField('Address', on_delete=models.CASCADE, verbose_name="Location Address")
     doc_poa_lawyer_id = models.CharField(max_length=255, verbose_name="POA Lawyer ID", blank=True, null=True, default=None)
@@ -124,3 +124,15 @@ class AccessToken(models.Model):
 
     class Meta:
         verbose_name_plural = "Access Tokens"
+
+
+class Lawyer(models.Model):
+    lawyer_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="Lawyer ID")
+    lawyer_name = models.CharField(unique=True, max_length=255, verbose_name="Lawyer Name")
+    lawyer_contact = models.ForeignKey('Contact', on_delete=models.CASCADE, verbose_name="Lawyer Contact")
+
+    def __str__(self):
+        return self.lawyer_name
+    class Meta:
+        verbose_name_plural = "Lawyers"
+
