@@ -1,0 +1,97 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Maps {% endblock %} 
+
+{% block stylesheets %}
+  <!-- Specific Page CSS goes HERE  -->
+{% endblock stylesheets %}
+
+{% block content %}
+  <div class="content text-center">
+    <div class="row justify-content-center">
+      <div class="col-md-12">
+        <div class="card card-plain">
+          <div class="card-header">
+            <form action="{% url 'update_deal' %}" method="POST">
+              {% csrf_token %}
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Deal ID</strong></td>
+                    <td><input type="text" name="deal_id" value="{{ deal.deal_id }}" readonly></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Trespassing Location</strong></td>
+                    <td><input type="text" name="trespassing_location" value="{{ deal.trespassing_location }}" readonly></td>
+                  </tr>
+                  <tr>
+                    <td><strong>License Plate</strong></td>
+                    <td><input type="text" name="license_plate_uuid" value="{{ deal.license_plate_uuid }}" readonly></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Lawyer</strong></td>
+                    <td>
+                      <select class="dropdown" id="lawyer-dropdown" name="lawyer">
+                          {% for lawyer in lawyers %}
+                              <option value="{{ lawyer.lawyer_name }}" {% if lawyer.lawyer_name == deal.lawyer.lawyer_name %} selected {% endif %}>
+                                  {{ lawyer.lawyer_name }}
+                              </option>
+                          {% endfor %}
+                      </select>
+                  </td>
+                  <tr>
+                    <td><strong>Work step</strong></td>
+                  <td>
+                    <select class="dropdown" id="lawyer-dropdown" name="work_step">
+                        {% for step in workflow_steps %}
+                            <option value="{{ step.name_of_step }}" {% if step.workflow_step == deal.step.name_of_step %} selected {% endif %}>
+                                {{ step.name_of_step }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </td>
+                  </tr>
+                  
+                  </tr>
+                  <!-- Add name attributes for other fields -->
+                </tbody>
+              </table>
+              <h2>License Plate Information</h2>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Field</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Plate Number</strong></td>
+                    <td><input type="text" name="plate_number" value="{{ deal.license_plate_uuid.plate_number }}" readonly></td>
+                  </tr>
+                  <!-- Add name attributes for other fields -->
+                </tbody>
+              </table>
+              <button type="submit" class="btn btn-primary">Update</button>
+            </form>
+            
+            
+          </div>
+          <div class="card-body">
+            <div id="map" class="map"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block javascripts %}
+  <!-- Specific Page JS goes HERE  -->
+{% endblock javascripts %}

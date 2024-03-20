@@ -1,0 +1,125 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Dashboard {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+
+        <div class="row" style="
+        margin-top: 100px;
+        margin-left: 248px;
+    ">
+            <div class="col-md-12">
+                <div class="card card-tasks">
+                    <div class="card-header ">
+                        <h6 class="title d-inline">Deals</h6>
+                        <p class="card-category d-inline">today</p>
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-link dropdown-toggle btn-icon"
+                                    data-toggle="dropdown">
+                                <i class="tim-icons icon-settings-gear-63"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                                <a class="dropdown-item" href="#pablo">Action</a>
+                                <a class="dropdown-item" href="#pablo">Another action</a>
+                                <a class="dropdown-item" href="#pablo">Something else</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-full-width table-responsive">
+                            <table class="table" style="text-decoration: none;">
+                                <thead>
+                                    <tr>
+                                        <th>Deal ID</th>
+                                        <th>Created At</th>
+                                        <th>Updated At</th>
+                                        <th>License Plate UUID</th>
+                                        <th>Trespassing Location UUID</th>
+                                        <th>Work step</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for deal in deals %}
+                                        <tr>
+                                            <td><a href="{% url 'deal_detail' deal_id=deal.deal_id %}">{{ deal.deal_id }}</a></td>
+                                            <td>{{ deal.created_at }}</td>
+                                            <td>{{ deal.updated_at }}</td>
+                                            <td>{{ deal.plate_number }}</td>
+                                            <td>{{ deal.location }}</td>
+                                            <td>{{ deal.work_step }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12">
+                <div class="card ">
+                    <div class="card-header">
+                        <h4 class="card-title">Completed</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table tablesorter " id="">
+                                <thead class=" text-primary">
+                                <tr>
+                                    <th>
+                                        Name
+                                    </th>
+                                    <th>
+                                        Country
+                                    </th>
+                                    <th>
+                                        City
+                                    </th>
+                                    <th class="text-center">
+                                        Salary
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>
+                                        Dakota Rice
+                                    </td>
+                                    <td>
+                                        Niger
+                                    </td>
+                                    <td>
+                                        Oud-Turnhout
+                                    </td>
+                                    <td class="text-center">
+                                        $36,738
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+    $(document).ready(function () {
+        // Javascript method's body can be found in assets/js/demos.js
+        demo.initDashboardPageCharts();
+
+    });
+</script>
+
+{% endblock javascripts %}
